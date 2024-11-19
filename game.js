@@ -11,20 +11,27 @@ const startButton = document.getElementById("startButton");
 
 const startSound = document.getElementById("startSound");
 const deathSound = document.getElementById("deathSound");
-const powerUpSound = document.getElementById("powerUpSound");
+const backgroundMusic = document.getElementById("backgroundMusic");
 
 let gameRunning = false;
-let smiley = { x: canvas.width / 2, y: canvas.height / 2, radius: 20, speed: 5 };
-let enemy = { x: 100, y: 100, radius: 25, speed: 2, poopInterval: 100 };
+const smiley = { x: canvas.width / 2, y: canvas.height / 2, radius: 20, speed: 5 };
+const enemy = { x: 100, y: 100, radius: 25, speed: 2, poopInterval: 100 };
 const carrots = [];
 const poops = [];
-const powerUps = [];
 const initialCarrotCount = 10;
 let poopTimer = 0;
 let score = 0;
-let enemySlowed = false; // Power-up status
 
-// Helper functions
+// Mouse Movement Listener
+canvas.addEventListener("mousemove", (e) => {
+  const mouseX = e.clientX;
+  const mouseY = e.clientY;
+
+  // Update the smiley position to follow the mouse
+  smiley.x = mouseX;
+  smiley.y = mouseY;
+});
+
 function randomPosition(max) {
   return Math.random() * (max - 50) + 25;
 }
@@ -39,10 +46,6 @@ function drawCircle(x, y, radius, color) {
 
 function drawEnemy(x, y, radius) {
   drawCircle(x, y, radius, "red");
-}
-
-function drawPowerUp(x, y, radius) {
-  drawCircle(x, y, radius, "blue");
 }
 
 function isCollision(x1, y1, r1, x2, y2, r2) {
@@ -62,16 +65,6 @@ function generateCarrots(count) {
       x: randomPosition(canvas.width),
       y: randomPosition(canvas.height),
       radius: 10,
-    });
-  }
-}
-
-function generatePowerUps(count) {
-  for (let i = 0; i < count; i++) {
-    powerUps.push({
-      x: randomPosition(canvas.width),
-      y: randomPosition(canvas.height),
-      radius: 15,
     });
   }
 }
@@ -112,21 +105,6 @@ function updateGame() {
     generateCarrots(initialCarrotCount);
   }
 
-  powerUps.forEach((powerUp, index) => {
-    drawPowerUp(powerUp.x, powerUp.y, powerUp.radius);
-
-    if (isCollision(smiley.x, smiley.y, smiley.radius, powerUp.x, powerUp.y, powerUp.radius)) {
-      powerUps.splice(index, 1);
-      enemySlowed = true;
-      enemy.speed *= 0.5; // Slow down enemy
-      powerUpSound.play();
-      setTimeout(() => {
-        enemySlowed = false;
-        enemy.speed *= 2; // Return enemy speed to normal after power-up effect ends
-      }, 5000); // Power-up lasts for 5 seconds
-    }
-  });
-
   poops.forEach((poop, index) => {
     drawCircle(poop.x, poop.y, poop.radius, "brown");
 
@@ -161,18 +139,12 @@ function updateGame() {
   requestAnimationFrame(updateGame);
 }
 
-// Update smiley's position based on mouse coordinates
-canvas.addEventListener("mousemove", (e) => {
-  smiley.x = e.clientX;
-  smiley.y = e.clientY;
-});
-
 // Start Button Listener
 startButton.addEventListener("click", () => {
   startScreen.style.display = "none"; // Hide start screen
-  startSound.play(); // Play background music
+  startSound.play(); // Play start sound
+  backgroundMusic.play(); // Play background music on loop
   gameRunning = true; // Start the game
   generateCarrots(initialCarrotCount); // Generate initial carrots
-  generatePowerUps(3); // Generate initial power-ups
   updateGame(); // Begin game loop
 });
