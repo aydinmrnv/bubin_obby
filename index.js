@@ -12,7 +12,7 @@ const deathSound = document.getElementById("deathSound");
 
 let gameRunning = false;
 const smiley = { x: canvas.width / 2, y: canvas.height / 2, radius: 20, speed: 5 };
-const enemy = { x: 100, y: 100, radius: 25, speed: 2, poopInterval: 100 };
+const enemy = { x: 100, y: 100, radius: 25, speed: 3, poopInterval: 100 };
 const carrots = [];
 const poops = [];
 const initialCarrotCount = 10;
@@ -118,13 +118,13 @@ function updateGame() {
     generateCarrots(initialCarrotCount);
   }
 
-  // Draw poops
+  // Draw poops (brown color)
   poops.forEach((poop, index) => {
     drawCircle(poop.x, poop.y, poop.radius, "brown");
 
     if (isCollision(smiley.x, smiley.y, smiley.radius, poop.x, poop.y, poop.radius)) {
       poops.splice(index, 1);
-      score--;
+      score -= 5;  // Decrease score by 5 for each poop collision
     }
   });
 
@@ -141,11 +141,27 @@ function updateGame() {
   if (isCollision(smiley.x, smiley.y, smiley.radius, enemy.x, enemy.y, enemy.radius)) {
     deathSound.play();
     gameRunning = false;
+    stopMusic(); // Stop music on death
+    alert("Game Over! Your score: " + score);
+    location.reload();
+  }
+
+  // Check if score is zero or negative
+  if (score <= 0) {
+    deathSound.play();
+    gameRunning = false;
+    stopMusic(); // Stop music on death
     alert("Game Over! Your score: " + score);
     location.reload();
   }
 
   requestAnimationFrame(updateGame);
+}
+
+// Stop the background music
+function stopMusic() {
+  startSound.pause(); // Stop the background music
+  startSound.currentTime = 0; // Reset music to start
 }
 
 // Track mouse movement
@@ -158,9 +174,9 @@ canvas.addEventListener("mousemove", (event) => {
 // Start game
 startButton.addEventListener("click", () => {
   startScreen.style.display = "none";
+  startSound.loop = true; // Loop the background music
   startSound.play();
   gameRunning = true;
   generateCarrots(initialCarrotCount);
   updateGame();
 });
-
