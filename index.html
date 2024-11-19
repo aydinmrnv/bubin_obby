@@ -1,15 +1,22 @@
-<div id="startScreen">
-  <h1>Welcome to the Game!</h1>
-  <label for="difficulty">Choose Difficulty:</label>
-  <select id="difficulty">
-    <option value="easy">Easy</option>
-    <option value="medium">Medium</option>
-    <option value="hard">Hard</option>
-  </select>
-  <br />
-  <label>
-    <input type="checkbox" id="addHat" /> Add a Hat
-  </label>
-  <br />
-  <button id="startButton">Start Game</button>
-</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smiley Game</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="startScreen">
+    <h1>Welcome to Smiley Game!</h1>
+    <button id="startButton">Start Game</button>
+  </div>
+  <canvas id="gameCanvas"></canvas>
+
+  <!-- Audio elements -->
+  <audio id="startSound" src="background-music.mp3"></audio>
+  <audio id="deathSound" src="death-sound.mp3"></audio>
+
+  <script src="game.js"></script>
+</body>
+</html>
