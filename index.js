@@ -12,7 +12,7 @@ const deathSound = document.getElementById("deathSound");
 
 let gameRunning = false;
 const smiley = { x: canvas.width / 2, y: canvas.height / 2, radius: 20, speed: 5 };
-const enemy = { x: 100, y: 100, radius: 25, speed: 3, poopInterval: 100 };
+const enemy = { x: 100, y: 100, radius: 25, speed: 3, poopInterval: 10 };
 const carrots = [];
 const poops = [];
 const initialCarrotCount = 10;
