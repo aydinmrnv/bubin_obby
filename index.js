@@ -147,7 +147,7 @@ function updateGame() {
   }
 
   // Check if score is zero or negative
-  if (score <= 0) {
+  if (score < 0) {
     deathSound.play();
     gameRunning = false;
     stopMusic(); // Stop music on death
