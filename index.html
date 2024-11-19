@@ -4,51 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Bubin Obby</title>
-  <style>
-    /* General Styles */
-    body {
-      margin: 0;
-      overflow: hidden;
-      background-color: #f4f4f4;
-      font-family: Arial, sans-serif;
-    }
-
-    /* Canvas Styles */
-    canvas {
-      display: block;
-      margin: auto;
-    }
-
-    /* Start Screen Styles */
-    #startScreen {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.8);
-      color: white;
-      flex-direction: column;
-      z-index: 10;
-    }
-
-    #startButton {
-      padding: 10px 20px;
-      font-size: 18px;
-      background-color: green;
-      color: white;
-      border: none;
-      cursor: pointer;
-      margin-top: 20px;
-    }
-
-    #startButton:hover {
-      background-color: darkgreen;
-    }
-  </style>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <div id="startScreen">
@@ -57,73 +13,11 @@
   </div>
   <canvas id="gameCanvas"></canvas>
 
-  <script>
-    const canvas = document.getElementById("gameCanvas");
-    const ctx = canvas.getContext("2d");
+  <!-- Audio Elements -->
+  <audio id="startSound" src="android.mp3"></audio>
+  <audio id="deathSound" src="oof_roblox.mp3"></audio>
 
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+  <script src="index.js"></script>
+</body>
+</html>
 
-    const startScreen = document.getElementById("startScreen");
-    const startButton = document.getElementById("startButton");
-
-    let gameRunning = false;
-    const smiley = { x: canvas.width / 2, y: canvas.height / 2, radius: 20, speed: 5 };
-    const enemy = { x: 100, y: 100, radius: 25, speed: 2, poopInterval: 100 };
-    const carrots = [];
-    const poops = [];
-    const initialCarrotCount = 10;
-    let poopTimer = 0;
-    let score = 0;
-
-    function randomPosition(max) {
-      return Math.random() * (max - 50) + 25;
-    }
-
-    function drawCircle(x, y, radius, color) {
-      ctx.beginPath();
-      ctx.arc(x, y, radius, 0, Math.PI * 2);
-      ctx.fillStyle = color;
-      ctx.fill();
-      ctx.closePath();
-    }
-
-    function drawEnemy(x, y, radius) {
-      drawCircle(x, y, radius, "red");
-
-      // Teeth
-      const toothSize = radius / 5;
-      const teethCount = 6;
-      const angleStep = (Math.PI * 2) / teethCount;
-
-      for (let i = 0; i < teethCount; i++) {
-        const angle = i * angleStep;
-        const toothX = x + Math.cos(angle) * radius * 0.9;
-        const toothY = y + Math.sin(angle) * radius * 0.9;
-
-        ctx.beginPath();
-        ctx.moveTo(x, y);
-        ctx.lineTo(toothX, toothY);
-        ctx.lineTo(
-          x + Math.cos(angle + angleStep / 2) * radius * 0.8,
-          y + Math.sin(angle + angleStep / 2) * radius * 0.8
-        );
-        ctx.closePath();
-        ctx.fillStyle = "white";
-        ctx.fill();
-      }
-    }
-
-    function isCollision(x1, y1, r1, x2, y2, r2) {
-      const dist = Math.hypot(x2 - x1, y2 - y1);
-      return dist < r1 + r2;
-    }
-
-    function displayScore() {
-      ctx.fillStyle = "black";
-      ctx.font = "24px Arial";
-      ctx.fillText(`Score: ${score}`, 20, 40);
-    }
-
-    function generateCarrots(count) {
-      for (let i = 0;
