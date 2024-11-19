@@ -12,18 +12,12 @@ const deathSound = document.getElementById("deathSound");
 
 let gameRunning = false;
 const smiley = { x: canvas.width / 2, y: canvas.height / 2, radius: 20, speed: 5 };
+const enemy = { x: 100, y: 100, radius: 25, speed: 2, poopInterval: 100 };
 const carrots = [];
 const poops = [];
 const initialCarrotCount = 10;
 let poopTimer = 0;
 let score = 0;
-let enemies = []; // Array to store enemies
-
-// Function to get random color for enemies
-function getRandomColor() {
-  const colors = ["red", "blue", "yellow", "purple", "orange", "pink", "green"];
-  return colors[Math.floor(Math.random() * colors.length)];
-}
 
 function randomPosition(max) {
   return Math.random() * (max - 50) + 25;
@@ -37,8 +31,8 @@ function drawCircle(x, y, radius, color) {
   ctx.closePath();
 }
 
-function drawEnemy(x, y, radius, color) {
-  drawCircle(x, y, radius, color);
+function drawEnemy(x, y, radius) {
+  drawCircle(x, y, radius, "red");
 
   // Teeth
   const toothSize = radius / 5;
@@ -84,7 +78,7 @@ function generateCarrots(count) {
   }
 }
 
-function moveEnemy(enemy) {
+function moveEnemy() {
   const angle = Math.atan2(smiley.y - enemy.y, smiley.x - enemy.x);
   enemy.x += enemy.speed * Math.cos(angle);
   enemy.y += enemy.speed * Math.sin(angle);
@@ -92,7 +86,7 @@ function moveEnemy(enemy) {
 
 function dropPoop() {
   poopTimer++;
-  if (poopTimer >= 100) {
+  if (poopTimer >= enemy.poopInterval) {
     poops.push({ x: enemy.x, y: enemy.y, radius: 10 });
     poopTimer = 0;
   }
@@ -106,11 +100,8 @@ function updateGame() {
   // Draw smiley
   drawCircle(smiley.x, smiley.y, smiley.radius, "green");
 
-  // Draw all enemies
-  enemies.forEach(enemy => {
-    drawEnemy(enemy.x, enemy.y, enemy.radius, enemy.color);
-    moveEnemy(enemy);
-  });
+  // Draw enemy
+  drawEnemy(enemy.x, enemy.y, enemy.radius);
 
   // Draw carrots
   carrots.forEach((carrot, index) => {
@@ -140,28 +131,18 @@ function updateGame() {
   // Display score
   displayScore();
 
+  // Move enemy
+  moveEnemy();
+
   // Drop poop
   dropPoop();
 
-  // Check collision with enemies
-  enemies.forEach((enemy) => {
-    if (isCollision(smiley.x, smiley.y, smiley.radius, enemy.x, enemy.y, enemy.radius)) {
-      deathSound.play();
-      gameRunning = false;
-      alert("Game Over! Your score: " + score);
-      location.reload();
-    }
-  });
-
-  // Add new enemy after every 20 points
-  if (score > 0 && score % 20 === 0 && enemies.length === score / 20) {
-    enemies.push({
-      x: randomPosition(canvas.width),
-      y: randomPosition(canvas.height),
-      radius: 25,
-      speed: 2,
-      color: getRandomColor()
-    });
+  // Check collision with enemy
+  if (isCollision(smiley.x, smiley.y, smiley.radius, enemy.x, enemy.y, enemy.radius)) {
+    deathSound.play();
+    gameRunning = false;
+    alert("Game Over! Your score: " + score);
+    location.reload();
   }
 
   requestAnimationFrame(updateGame);
