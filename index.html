@@ -3,23 +3,23 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Smiley Game</title>
+  <title>Bubin_obby</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <!-- Start Screen -->
-  <div id="startScreen">
-    <h1>Smiley Game</h1>
-    <button id="startButton">Start Game</button>
+  <div id="startScreen" class="start-screen">
+    <h1>Welcome to Bubin_obby!</h1>
+    <button id="startButton" class="start-button">Start Game</button>
   </div>
 
-  <!-- Game Canvas -->
+  <!-- Canvas for the game -->
   <canvas id="gameCanvas"></canvas>
 
-  <!-- Sounds -->
-  <audio id="startSound" src="start.mp3" loop></audio>
-  <audio id="deathSound" src="death.mp3"></audio>
-  <audio id="powerUpSound" src="powerUp.mp3"></audio>
+  <!-- Sounds (optional, add your sound files) -->
+  <audio id="backgroundMusic" src="background_music.mp3" preload="auto" loop></audio>
+  <audio id="startSound" src="start.mp3" preload="auto"></audio>
+  <audio id="deathSound" src="death.mp3" preload="auto"></audio>
 
   <script src="game.js"></script>
 </body>
