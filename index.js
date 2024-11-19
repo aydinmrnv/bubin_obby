@@ -158,6 +158,12 @@ function updateGame() {
   requestAnimationFrame(updateGame);
 }
 
+// Stop the background music
+function stopMusic() {
+  startSound.pause(); // Stop the background music
+  startSound.currentTime = 0; // Reset music to start
+}
+
 // Track mouse movement
 canvas.addEventListener("mousemove", (event) => {
   // Update smiley position based on mouse coordinates
