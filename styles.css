@@ -23,6 +23,14 @@ body, html {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    background: rgba(255, 255, 255, 0.8);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+#startScreen h1 {
+    margin-bottom: 10px;
 }
 
 #startButton {
@@ -34,6 +42,11 @@ body, html {
     color: white;
     border-radius: 5px;
     margin-top: 20px;
+    transition: background-color 0.3s;
+}
+
+#startButton:hover {
+    background-color: #45a049;
 }
 
 canvas {
