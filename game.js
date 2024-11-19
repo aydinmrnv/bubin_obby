@@ -16,14 +16,10 @@ const bgMusic = document.getElementById("bgMusic");
 
 let gameRunning = false;
 let smiley = { x: canvas.width / 2, y: canvas.height / 2, radius: 20, speed: 5 };
-let enemy = { x: 100, y: 100, radius: 25, speed: 2, poopInterval: 100 };
 const carrots = [];
-const poops = [];
 const powerUps = [];
 const initialCarrotCount = 10;
-let poopTimer = 0;
 let score = 0;
-let enemySlowed = false; // Power-up status
 let level = 1;
 
 // Functions for generating positions and drawing elements
@@ -37,14 +33,6 @@ function drawCircle(x, y, radius, color) {
   ctx.fillStyle = color;
   ctx.fill();
   ctx.closePath();
-}
-
-function drawEnemy(x, y, radius) {
-  drawCircle(x, y, radius, "red");
-}
-
-function drawPowerUp(x, y, radius) {
-  drawCircle(x, y, radius, "blue");
 }
 
 function isCollision(x1, y1, r1, x2, y2, r2) {
@@ -79,25 +67,10 @@ function generatePowerUps(count) {
   }
 }
 
-function moveEnemy() {
-  const angle = Math.atan2(smiley.y - enemy.y, smiley.x - enemy.x);
-  enemy.x += enemy.speed * Math.cos(angle);
-  enemy.y += enemy.speed * Math.sin(angle);
-}
-
-function dropPoop() {
-  poopTimer++;
-  if (poopTimer >= enemy.poopInterval) {
-    poops.push({ x: enemy.x, y: enemy.y, radius: 10 });
-    poopTimer = 0;
-  }
-}
-
-// Function to increase difficulty by adding new enemies or hazards
+// Increase difficulty by adding more carrots and power-ups
 function increaseDifficulty() {
   if (score % 10 === 0 && score > 0) {
     level++;
-    enemy.speed += 0.5; // Increase enemy speed as the level increases
     generateCarrots(5); // Add more carrots
     generatePowerUps(2); // Add more power-ups
   }
@@ -118,9 +91,6 @@ function updateGame(event) {
   // Draw smiley
   drawCircle(smiley.x, smiley.y, smiley.radius, "green");
 
-  // Draw enemy
-  drawEnemy(enemy.x, enemy.y, enemy.radius);
-
   // Draw carrots
   carrots.forEach((carrot, index) => {
     drawCircle(carrot.x, carrot.y, carrot.radius, "orange");
@@ -133,49 +103,20 @@ function updateGame(event) {
 
   // Draw power-ups
   powerUps.forEach((powerUp, index) => {
-    drawPowerUp(powerUp.x, powerUp.y, powerUp.radius);
+    drawCircle(powerUp.x, powerUp.y, powerUp.radius, "blue");
 
     if (isCollision(smiley.x, smiley.y, smiley.radius, powerUp.x, powerUp.y, powerUp.radius)) {
       powerUps.splice(index, 1);
-      enemySlowed = true;
-      enemy.speed *= 0.5; // Slow down enemy
       powerUpSound.play();
-      setTimeout(() => {
-        enemySlowed = false;
-        enemy.speed *= 2; // Reset enemy speed after power-up ends
-      }, 5000); // Power-up lasts for 5 seconds
+      score += 5; // Gain 5 points on power-up
     }
   });
-
-  // Draw poops
-  poops.forEach((poop, index) => {
-    drawCircle(poop.x, poop.y, poop.radius, "brown");
-
-    if (isCollision(smiley.x, smiley.y, smiley.radius, poop.x, poop.y, poop.radius)) {
-      poops.splice(index, 1);
-      score -= 5;
-    }
-  });
-
-  // Check for collisions with enemy
-  if (isCollision(smiley.x, smiley.y, smiley.radius, enemy.x, enemy.y, enemy.radius)) {
-    deathSound.play();
-    gameRunning = false;
-    alert("Game Over! Your score: " + score);
-    location.reload();
-  }
 
   // Increase difficulty based on score
   increaseDifficulty();
 
   // Display score and level
   displayScore();
-
-  // Move enemy
-  moveEnemy();
-
-  // Drop poops from enemy
-  dropPoop();
 
   // Keep the game running with animation
   requestAnimationFrame((e) => updateGame(e));
