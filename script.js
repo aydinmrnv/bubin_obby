@@ -1,9 +1,11 @@
+// Canvas and Context
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
+// Game Elements
 const startScreen = document.getElementById("startScreen");
 const startButton = document.getElementById("startButton");
 
@@ -33,27 +35,6 @@ function drawCircle(x, y, radius, color) {
 
 function drawEnemy(x, y, radius) {
   drawCircle(x, y, radius, "red");
-
-  const toothSize = radius / 5;
-  const teethCount = 6;
-  const angleStep = (Math.PI * 2) / teethCount;
-
-  for (let i = 0; i < teethCount; i++) {
-    const angle = i * angleStep;
-    const toothX = x + Math.cos(angle) * radius * 0.9;
-    const toothY = y + Math.sin(angle) * radius * 0.9;
-
-    ctx.beginPath();
-    ctx.moveTo(x, y);
-    ctx.lineTo(toothX, toothY);
-    ctx.lineTo(
-      x + Math.cos(angle + angleStep / 2) * radius * 0.8,
-      y + Math.sin(angle + angleStep / 2) * radius * 0.8
-    );
-    ctx.closePath();
-    ctx.fillStyle = "white";
-    ctx.fill();
-  }
 }
 
 function isCollision(x1, y1, r1, x2, y2, r2) {
@@ -147,10 +128,11 @@ function updateGame() {
   requestAnimationFrame(updateGame);
 }
 
+// Start Button Listener
 startButton.addEventListener("click", () => {
-  startScreen.style.display = "none";
-  startSound.play();
-  gameRunning = true;
-  generateCarrots(initialCarrotCount);
-  updateGame();
+  startScreen.style.display = "none"; // Hide start screen
+  startSound.play(); // Play background music
+  gameRunning = true; // Start the game
+  generateCarrots(initialCarrotCount); // Generate initial carrots
+  updateGame(); // Begin game loop
 });
