@@ -146,8 +146,8 @@ function updateGame() {
     location.reload();
   }
 
-  // Check if score is zero or negative
-  if (score < 0) {
+  // Check if score is below -2
+  if (score <= -2) {
     deathSound.play();
     gameRunning = false;
     stopMusic(); // Stop music on death
@@ -180,3 +180,4 @@ startButton.addEventListener("click", () => {
   generateCarrots(initialCarrotCount);
   updateGame();
 });
+
