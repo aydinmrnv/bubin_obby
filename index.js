@@ -6,6 +6,8 @@ canvas.height = window.innerHeight;
 
 const startScreen = document.getElementById("startScreen");
 const startButton = document.getElementById("startButton");
+const difficultySelector = document.getElementById("difficulty");
+const addHatCheckbox = document.getElementById("addHat");
 
 const startSound = document.getElementById("startSound");
 const deathSound = document.getElementById("deathSound");
@@ -18,6 +20,8 @@ const poops = [];
 const initialCarrotCount = 10;
 let poopTimer = 0;
 let score = 0;
+let hatImage = new Image(); // Image for the hat
+hatImage.src = "hat.png"; // Path to the hat image
 
 function randomPosition(max) {
   return Math.random() * (max - 50) + 25;
@@ -29,6 +33,18 @@ function drawCircle(x, y, radius, color) {
   ctx.fillStyle = color;
   ctx.fill();
   ctx.closePath();
+}
+
+function drawSmiley() {
+  // Draw the smiley
+  drawCircle(smiley.x, smiley.y, smiley.radius, "green");
+
+  // If hat option is selected, draw the hat
+  if (addHatCheckbox.checked) {
+    const hatWidth = smiley.radius * 2;
+    const hatHeight = smiley.radius;
+    ctx.drawImage(hatImage, smiley.x - smiley.radius, smiley.y - smiley.radius - hatHeight, hatWidth, hatHeight);
+  }
 }
 
 function drawEnemy(x, y, radius) {
@@ -98,7 +114,7 @@ function updateGame() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   // Draw smiley
-  drawCircle(smiley.x, smiley.y, smiley.radius, "green");
+  drawSmiley();
 
   // Draw enemy
   drawEnemy(enemy.x, enemy.y, enemy.radius);
@@ -113,44 +129,27 @@ function updateGame() {
     }
   });
 
-  // Check if all carrots are collected
   if (carrots.length === 0) {
     generateCarrots(initialCarrotCount);
   }
 
-  // Draw poops (brown color)
   poops.forEach((poop, index) => {
     drawCircle(poop.x, poop.y, poop.radius, "brown");
 
     if (isCollision(smiley.x, smiley.y, smiley.radius, poop.x, poop.y, poop.radius)) {
       poops.splice(index, 1);
-      score -= 5;  // Decrease score by 5 for each poop collision
+      score -= 5;
     }
   });
 
-  // Display score
   displayScore();
-
-  // Move enemy
   moveEnemy();
-
-  // Drop poop
   dropPoop();
 
-  // Check collision with enemy
-  if (isCollision(smiley.x, smiley.y, smiley.radius, enemy.x, enemy.y, enemy.radius)) {
+  if (isCollision(smiley.x, smiley.y, smiley.radius, enemy.x, enemy.y, enemy.radius) || score <= -2) {
     deathSound.play();
     gameRunning = false;
-    stopMusic(); // Stop music on death
-    alert("Game Over! Your score: " + score);
-    location.reload();
-  }
-
-  // Check if score is below -2
-  if (score <= -2) {
-    deathSound.play();
-    gameRunning = false;
-    stopMusic(); // Stop music on death
+    stopMusic();
     alert("Game Over! Your score: " + score);
     location.reload();
   }
@@ -158,26 +157,32 @@ function updateGame() {
   requestAnimationFrame(updateGame);
 }
 
-// Stop the background music
 function stopMusic() {
-  startSound.pause(); // Stop the background music
-  startSound.currentTime = 0; // Reset music to start
+  startSound.pause();
+  startSound.currentTime = 0;
 }
 
-// Track mouse movement
-canvas.addEventListener("mousemove", (event) => {
-  // Update smiley position based on mouse coordinates
-  smiley.x = event.clientX;
-  smiley.y = event.clientY;
-});
+// Adjust difficulty based on selection
+function setDifficulty() {
+  const difficulty = difficultySelector.value;
+  if (difficulty === "easy") enemy.speed = 5;
+  else if (difficulty === "medium") enemy.speed = 10;
+  else if (difficulty === "hard") enemy.speed = 15;
+}
 
 // Start game
 startButton.addEventListener("click", () => {
+  setDifficulty();
   startScreen.style.display = "none";
-  startSound.loop = true; // Loop the background music
+  startSound.loop = true;
   startSound.play();
   gameRunning = true;
   generateCarrots(initialCarrotCount);
   updateGame();
 });
 
+// Track mouse movement
+canvas.addEventListener("mousemove", (event) => {
+  smiley.x = event.clientX;
+  smiley.y = event.clientY;
+});
